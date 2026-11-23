@@ -9,13 +9,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="img/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="static/css/style.css" />
+
 </head>
 <body>
 
 <header class="site-header">
   <div class="wrap bar">
-    <a class="brand" href="#top" aria-label="Miss Cee, home"><img src="img/logo.svg" alt="" width="38" height="38"><span>Miss Cee</span></a>
+    <a class="brand" href="#top" aria-label="Miss Cee, home"><img src="static/images/logo.svg" alt="" width="38" height="38"><span>Miss Cee</span></a>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav id="nav" class="nav" aria-label="Main">
       <a href="#about">About</a>
@@ -41,7 +42,7 @@
         </div>
       </div>
       <figure class="hero-photo">
-        <img src="img/hosting.jpg" alt="Miss Cee hosting a podcast episode, seated on a couch and speaking" width="691" height="386">
+        <img src="static/images/hosting.jpg" alt="Miss Cee hosting a podcast episode, seated on a couch and speaking" width="691" height="386">
         <figcaption>Hosting on the DE'14 Podcast</figcaption>
       </figure>
     </div>
@@ -50,7 +51,7 @@
   <section id="about" class="section">
     <div class="wrap about-grid">
       <figure class="about-photo">
-        <img src="img/miss-cee.jpg" alt="Portrait of Miss Cee in a green headwrap and green top" width="640" height="800">
+        <img src="static/images/miss-cee.jpg" alt="Portrait of Miss Cee in a green headwrap and green top" width="640" height="800">
       </figure>
       <div class="about-text">
         <h2>About</h2>
@@ -80,20 +81,20 @@
       <p class="sub">Tap an image to view it larger.</p>
       <ul class="cards work">
         <li class="card work-card">
-          <button class="thumb" data-full="img/hosting.jpg" data-cap="Hosting on the DE'14 Podcast" aria-label="View larger: hosting on the DE'14 Podcast">
-            <img src="img/hosting.jpg" alt="Miss Cee hosting a podcast episode" loading="lazy" width="691" height="386">
+          <button class="thumb" data-full="static/images/hosting.jpg" data-cap="Hosting on the DE'14 Podcast" aria-label="View larger: hosting on the DE'14 Podcast">
+            <img src="static/images/hosting.jpg" alt="Miss Cee hosting a podcast episode" loading="lazy" width="691" height="386">
           </button>
           <div class="card-body"><h3>Podcast host</h3><p>I host episodes on the DE'14 Podcast.</p></div>
         </li>
         <li class="card work-card">
-          <button class="thumb" data-full="img/d14-podcast.jpg" data-cap="DE'14 Podcast logo" aria-label="View larger: DE'14 Podcast logo">
-            <img src="img/d14-podcast.jpg" alt="DE'14 Podcast logo in white and yellow on black, with a microphone" loading="lazy" width="900" height="600">
+          <button class="thumb" data-full="static/images/d14-podcast.jpg" data-cap="DE'14 Podcast logo" aria-label="View larger: DE'14 Podcast logo">
+            <img src="static/images/d14-podcast.jpg" alt="DE'14 Podcast logo in white and yellow on black, with a microphone" loading="lazy" width="900" height="600">
           </button>
           <div class="card-body"><h3>DE'14 Podcast</h3><p>The podcast I work with as a host.</p></div>
         </li>
         <li class="card work-card">
-          <button class="thumb light" data-full="img/dim-group.jpg" data-cap="DIM Group logo, created for a client" aria-label="View larger: DIM Group logo">
-            <img src="img/dim-group.jpg" alt="DIM Group logo in black and gold with a building icon" loading="lazy" width="900" height="900">
+          <button class="thumb light" data-full="static/images/dim-group.jpg" data-cap="DIM Group logo, created for a client" aria-label="View larger: DIM Group logo">
+            <img src="static/images/dim-group.jpg" alt="DIM Group logo in black and gold with a building icon" loading="lazy" width="900" height="900">
           </button>
           <div class="card-body"><h3>Logo for DIM Group</h3><p>A logo I created for a client.</p></div>
         </li>
@@ -144,6 +145,468 @@
   <p id="lbCap"></p>
 </dialog>
 
-<script src="js/main.js"></script>
+<script>
+  /* ============================================================
+   Miss Cee Portfolio — main.js
+   Description: Interactive behaviours for the portfolio site.
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  /* ----------------------------------------------------------
+     Utility helpers
+     ---------------------------------------------------------- */
+  const $  = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+  const prefersReducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ----------------------------------------------------------
+     1. Footer year
+     ---------------------------------------------------------- */
+  const yearEl = $('#year');
+  if (yearEl) {
+    yearEl.textContent = String(new Date().getFullYear());
+  }
+
+  /* ----------------------------------------------------------
+     2. Skip link (accessibility)
+     ---------------------------------------------------------- */
+  (function addSkipLink() {
+    if ($('.skip-link')) return;
+    const main = $('#top');
+    if (!main) return;
+
+    const link = document.createElement('a');
+    link.href = '#top';
+    link.className = 'skip-link';
+    link.textContent = 'Skip to main content';
+    document.body.insertBefore(link, document.body.firstChild);
+  })();
+
+  /* ----------------------------------------------------------
+     3. Mobile navigation toggle
+     ---------------------------------------------------------- */
+  (function initMobileNav() {
+    const menuBtn = $('#menuBtn');
+    const nav = $('#nav');
+    if (!menuBtn || !nav) return;
+
+    const openNav = () => {
+      nav.classList.add('open');
+      menuBtn.setAttribute('aria-expanded', 'true');
+    };
+
+    const closeNav = () => {
+      nav.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    };
+
+    const toggleNav = () => {
+      if (nav.classList.contains('open')) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    };
+
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleNav();
+    });
+
+    // Close when a nav link is clicked
+    nav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) closeNav();
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!nav.classList.contains('open')) return;
+      if (nav.contains(e.target) || menuBtn.contains(e.target)) return;
+      closeNav();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        closeNav();
+        menuBtn.focus();
+      }
+    });
+
+    // Reset state when resizing to desktop
+    const mq = window.matchMedia('(min-width: 768px)');
+    const handleMq = (ev) => {
+      if (ev.matches) closeNav();
+    };
+    if (typeof mq.addEventListener === 'function') {
+      mq.addEventListener('change', handleMq);
+    } else if (typeof mq.addListener === 'function') {
+      mq.addListener(handleMq); // legacy Safari
+    }
+  })();
+
+  /* ----------------------------------------------------------
+     4. Sticky header shadow on scroll
+     ---------------------------------------------------------- */
+  (function initHeaderShadow() {
+    const header = $('.site-header');
+    if (!header) return;
+
+    let ticking = false;
+
+    const update = () => {
+      header.classList.toggle('scrolled', window.scrollY > 8);
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    update();
+  })();
+
+  /* ----------------------------------------------------------
+     5. Smooth in-page anchor scrolling
+        (honours reduced motion; falls back if CSS smooth
+        scrolling is unsupported)
+     ---------------------------------------------------------- */
+  (function initSmoothAnchors() {
+    const supportsSmooth = 'scrollBehavior' in document.documentElement.style;
+
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+
+      const hash = link.getAttribute('href');
+      if (!hash || hash === '#') return;
+
+      const target = document.querySelector(hash);
+      if (!target) return;
+
+      e.preventDefault();
+
+      const headerOffset = (() => {
+        const header = $('.site-header');
+        return header ? header.offsetHeight : 0;
+      })();
+
+      const top = target.getBoundingClientRect().top +
+                  window.pageYOffset -
+                  headerOffset +
+                  1;
+
+      if (prefersReducedMotion() || !supportsSmooth) {
+        window.scrollTo(0, top);
+      } else {
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+
+      // Update focus for a11y without jumping
+      if (!target.hasAttribute('tabindex')) {
+        target.setAttribute('tabindex', '-1');
+      }
+      target.focus({ preventScroll: true });
+
+      // Update the URL hash without a jump
+      if (history.replaceState) {
+        history.replaceState(null, '', hash);
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     6. Lightbox for work images
+     ---------------------------------------------------------- */
+  (function initLightbox() {
+    const dialog = $('#lightbox');
+    const lbImg = $('#lbImg');
+    const lbCap = $('#lbCap');
+    if (!dialog || !lbImg || !lbCap) return;
+
+    // Graceful fallback for browsers without <dialog>
+    const supportsDialog =
+      typeof dialog.showModal === 'function';
+
+    let lastFocused = null;
+
+    const open = (trigger) => {
+      const full = trigger.getAttribute('data-full');
+      const cap = trigger.getAttribute('data-cap') || '';
+      const img = trigger.querySelector('img');
+
+      if (!full) return;
+
+      lbImg.src = full;
+      lbImg.alt = img ? img.alt : cap;
+      lbCap.textContent = cap;
+
+      lastFocused = trigger;
+
+      if (supportsDialog) {
+        dialog.showModal();
+        document.body.classList.add('lb-open');
+      } else {
+        // Fallback: open image in a new tab
+        window.open(full, '_blank', 'noopener');
+        lastFocused = null;
+      }
+    };
+
+    const close = () => {
+      if (!supportsDialog) return;
+      if (dialog.open) dialog.close();
+      document.body.classList.remove('lb-open');
+      if (lastFocused && typeof lastFocused.focus === 'function') {
+        lastFocused.focus();
+      }
+      lastFocused = null;
+    };
+
+    // Delegate clicks on thumbnails
+    document.addEventListener('click', (e) => {
+      const thumb = e.target.closest('.thumb');
+      if (!thumb) return;
+      e.preventDefault();
+      open(thumb);
+    });
+
+    // Close via form[method="dialog"] button (native) or fallback
+    dialog.addEventListener('click', (e) => {
+      // Click on backdrop (outside the dialog content)
+      if (e.target === dialog) {
+        close();
+      }
+    });
+
+    // Native close event (fires when form[method=dialog] submits)
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('lb-open');
+      if (lastFocused && typeof lastFocused.focus === 'function') {
+        lastFocused.focus();
+      }
+      lastFocused = null;
+      // Reset after animation
+      setTimeout(() => {
+        lbImg.removeAttribute('src');
+        lbCap.textContent = '';
+      }, 200);
+    });
+
+    // Keyboard: Escape handled by dialog natively, but add safety
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dialog.open) {
+        close();
+      }
+    });
+
+    // Close button (in case form[method=dialog] is unsupported)
+    const closeBtn = dialog.querySelector('.close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        if (!supportsDialog) return;
+        e.preventDefault();
+        close();
+      });
+    }
+  })();
+
+  /* ----------------------------------------------------------
+     7. Contact list — build from data with safe fallbacks
+        (the HTML leaves #contactList empty; we populate it)
+     ---------------------------------------------------------- */
+  (function initContactList() {
+    const list = $('#contactList');
+    if (!list) return;
+
+    // No hardcoded contact data in the HTML, so we provide a
+    // sensible default set. Replace these with real details.
+    const contacts = [
+      { label: 'Email', value: 'hello@misscee.example', href: 'mailto:hello@misscee.example' },
+      { label: 'Instagram', value: '@misscee', href: 'https://instagram.com/' },
+      { label: 'LinkedIn', value: 'Rowland Cynthia', href: 'https://linkedin.com/' }
+    ];
+
+    // Respect any data-* hints if present on the list element
+    // e.g. data-email / data-phone
+    const email = list.getAttribute('data-email');
+    const phone = list.getAttribute('data-phone');
+    const instagram = list.getAttribute('data-instagram');
+    const linkedin = list.getAttribute('data-linkedin');
+
+    const resolved = [];
+
+    if (email) resolved.push({ label: 'Email', value: email, href: `mailto:${email}` });
+    if (phone) resolved.push({ label: 'Phone', value: phone, href: `tel:${phone.replace(/[^\d+]/g, '')}` });
+    if (instagram) resolved.push({ label: 'Instagram', value: instagram, href: instagram.startsWith('http') ? instagram : `https://instagram.com/${instagram.replace(/^@/, '')}` });
+    if (linkedin) resolved.push({ label: 'LinkedIn', value: linkedin, href: linkedin.startsWith('http') ? linkedin : `https://linkedin.com/in/${linkedin}` });
+
+    const finalContacts = resolved.length ? resolved : contacts;
+
+    const frag = document.createDocumentFragment();
+
+    finalContacts.forEach((c) => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = c.href;
+      a.textContent = `${c.label}: ${c.value}`;
+
+      if (c.href.startsWith('http')) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
+
+      li.appendChild(a);
+      frag.appendChild(li);
+    });
+
+    list.appendChild(frag);
+  })();
+
+  /* ----------------------------------------------------------
+     8. Lazy-load images: add native fallback + fade-in
+     ---------------------------------------------------------- */
+  (function initImageReveal() {
+    const imgs = $$('img[loading="lazy"]');
+    if (!imgs.length) return;
+
+    const reveal = (img) => {
+      img.style.opacity = '1';
+    };
+
+    imgs.forEach((img) => {
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 400ms ease';
+
+      if (img.complete) {
+        reveal(img);
+      } else {
+        img.addEventListener('load', () => reveal(img), { once: true });
+        img.addEventListener('error', () => {
+          img.style.opacity = '1';
+          img.style.background = '#e6f4ec';
+        }, { once: true });
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     9. Reveal-on-scroll for cards & sections
+        (IntersectionObserver, respects reduced motion)
+     ---------------------------------------------------------- */
+  (function initScrollReveal() {
+    if (prefersReducedMotion()) return;
+    if (!('IntersectionObserver' in window)) return;
+
+    const targets = $$('.card, .timeline li, .about-photo, .hero-photo');
+    if (!targets.length) return;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .reveal-init { opacity: 0; transform: translateY(18px); }
+      .reveal-in { opacity: 1; transform: none; transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+    `;
+    document.head.appendChild(style);
+
+    targets.forEach((el, i) => {
+      el.classList.add('reveal-init');
+      // Stagger by index within its group, capped
+      el.style.transitionDelay = `${Math.min(i % 6, 5) * 70}ms`;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('reveal-in');
+        entry.target.classList.remove('reveal-init');
+        observer.unobserve(entry.target);
+      });
+    }, {
+      root: null,
+      rootMargin: '0px 0px -8% 0px',
+      threshold: 0.12
+    });
+
+    targets.forEach((el) => observer.observe(el));
+  })();
+
+  /* ----------------------------------------------------------
+     10. Active nav link highlighting (scroll spy)
+     ---------------------------------------------------------- */
+  (function initScrollSpy() {
+    if (!('IntersectionObserver' in window)) return;
+
+    const navLinks = $$('#nav a[href^="#"]');
+    if (!navLinks.length) return;
+
+    const sections = navLinks
+      .map((link) => {
+        const id = link.getAttribute('href');
+        const el = id && id !== '#' ? document.querySelector(id) : null;
+        return el ? { link, el } : null;
+      })
+      .filter(Boolean);
+
+    if (!sections.length) return;
+
+    const setActive = (activeLink) => {
+      navLinks.forEach((l) => l.classList.remove('is-active'));
+      if (activeLink) activeLink.classList.add('is-active');
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const match = sections.find((s) => s.el === entry.target);
+        if (match) setActive(match.link);
+      });
+    }, {
+      rootMargin: '-45% 0px -50% 0px',
+      threshold: 0
+    });
+
+    sections.forEach((s) => observer.observe(s.el));
+
+    // Clear highlight when at the very top (hero)
+    window.addEventListener('scroll', () => {
+      if (window.scrollY < 120) setActive(null);
+    }, { passive: true });
+  })();
+
+  /* ----------------------------------------------------------
+     11. Keyboard support: Enter/Space on custom thumbs
+          (buttons already handle this natively, but we
+           ensure the whole card is accessible)
+     ---------------------------------------------------------- */
+  (function initThumbKeyboard() {
+    $$('.thumb').forEach((thumb) => {
+      if (thumb.tagName === 'BUTTON') return; // native
+      thumb.setAttribute('role', 'button');
+      thumb.setAttribute('tabindex', '0');
+      thumb.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          thumb.click();
+        }
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     12. Prevent body scroll lock stuck state on load
+     ---------------------------------------------------------- */
+  window.addEventListener('pageshow', () => {
+    document.body.classList.remove('lb-open');
+  });
+
+})();
+</script>
 </body>
 </html>
